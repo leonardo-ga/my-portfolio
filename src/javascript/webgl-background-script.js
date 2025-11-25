@@ -67,7 +67,7 @@ function animate() {
     requestAnimationFrame(animate);
 
     // Rotate Earth
-    earth.model.rotation.y += 0.002;
+    earth.update();
 
     // Parallax effect based on scroll
     camera.position.y = -scrollY * 0.001;  // subtle vertical parallax

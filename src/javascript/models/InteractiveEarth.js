@@ -17,6 +17,7 @@ export default class InteractiveEarth {
 
   loadModel() {
     this.model = new THREE.Group();
+    this.innerModel = new THREE.Group();
     // Structure
     this.geo = new THREE.IcosahedronGeometry(1, this.icoDetails);
     this.mat = new THREE.MeshBasicMaterial({
@@ -24,7 +25,7 @@ export default class InteractiveEarth {
         wireframe: true
     });
     this.cube = new THREE.Mesh(this.geo, this.mat);
-    this.model.add(this.cube);
+    this.innerModel.add(this.cube);
     // Points on Earth
     this.pointsGeo = new THREE.IcosahedronGeometry(1, this.pointsDetail);
     this.loadShaders();
@@ -35,7 +36,10 @@ export default class InteractiveEarth {
         transparent: true
     });
     this.points = new THREE.Points(this.pointsGeo, this.pointsMat);
-    this.model.add(this.points);
+    this.innerModel.add(this.points);
+
+    this.model.add(this.innerModel);
+    this.model.rotation.z = - 0.42;
   }
 
   loadShaders() {
@@ -77,6 +81,13 @@ export default class InteractiveEarth {
         elevTexture: { type: "t", value: this.elevMap },
         alphaTexture: { type: "t", value: this.alphaMap }
     };
+  }
+
+  /**
+   * For Earth movement
+   */
+  update() {
+    this.innerModel.rotation.y += 0.002;
   }
   
 }
