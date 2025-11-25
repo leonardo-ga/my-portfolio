@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import InteractiveEarth from './models/InteractiveEarth';
-import getStarfield from './models/getStarfield';
+import Stars from './models/Stars';
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl-background')
@@ -19,17 +19,23 @@ const elevMap = textureLoader.load("./textures/01_earthbump1k.jpg");
 const alphaMap = textureLoader.load("./textures/02_earthspec1k.jpg");
 
 const earth = new InteractiveEarth({
-    colorMap,
-    elevMap,
-    alphaMap
+    icoDetail: 10,
+    pointsDetail: 120,
+    textures: {
+        colorMap,
+        elevMap,
+        alphaMap
+    }
 });
 scene.add(earth.model);
 
-const stars = getStarfield({
+const stars = new Stars({
     numStars: 4500,
-    sprite: starSprite
+    textures: {
+        sprite: starSprite
+    }
 });
-scene.add(stars);
+scene.add(stars.model);
 
 // Lights
 /*const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);

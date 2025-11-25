@@ -2,29 +2,31 @@ import * as THREE from 'three';
 
 export default class InteractiveEarth {
 
-  constructor(textures) {
-    this.loadTextures(textures);
+  constructor(params = {}) {
+    this.loadParameters(params);
     this.loadModel();
   }
 
-  loadTextures(textures) {
-    this.colorMap = textures.colorMap;
-    this.elevMap = textures.elevMap;
-    this.alphaMap = textures.alphaMap;
+  loadParameters(params) {
+    this.icoDetails = params.icoDetails || 10;
+    this.pointsDetail = params.icoDetails || 120;
+    this.colorMap = params.textures.colorMap;
+    this.elevMap = params.textures.elevMap;
+    this.alphaMap = params.textures.alphaMap;
   }
 
   loadModel() {
     this.model = new THREE.Group();
-    this.geo = new THREE.IcosahedronGeometry(1, 10);
+    // Structure
+    this.geo = new THREE.IcosahedronGeometry(1, this.icoDetails);
     this.mat = new THREE.MeshBasicMaterial({
         color: 0x202020,
         wireframe: true
     });
     this.cube = new THREE.Mesh(this.geo, this.mat);
     this.model.add(this.cube);
-    //
-    const detail = 120;
-    this.pointsGeo = new THREE.IcosahedronGeometry(1, detail);
+    // Points on Earth
+    this.pointsGeo = new THREE.IcosahedronGeometry(1, this.pointsDetail);
     this.loadShaders();
     this.pointsMat = new THREE.ShaderMaterial({
         uniforms: this.uniforms,
