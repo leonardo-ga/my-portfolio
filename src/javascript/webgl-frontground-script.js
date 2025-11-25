@@ -1,4 +1,8 @@
+/*
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
+import InteractiveEarth from './models/InteractiveEarth';
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl-frontground')
@@ -9,16 +13,38 @@ const sizes = { width: window.innerWidth, height: window.innerHeight };
 // Scene
 const scene = new THREE.Scene();
 
-// Cube
-const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshStandardMaterial({ 
-    color: 0x00ff00,
-    wireframe: true
-});
-const cube = new THREE.Mesh(geometry, material);
-cube.position.x = -1;
-cube.position.z = -3; // start a bit behind the camera
-scene.add(cube);
+// Loaders
+const loaders = {};
+loaders.gltfLoader = new GLTFLoader();
+loaders.dracoLoader = new DRACOLoader();
+loaders.dracoLoader.setDecoderPath('/draco/');
+loaders.gltfLoader.setDRACOLoader(loaders.dracoLoader);
+loaders.textureLoader = new THREE.TextureLoader();
+loaders.cubeTextureLoader = new THREE.CubeTextureLoader();
+
+// Paper plane
+let paperPlaneModel;
+
+loaders.gltfLoader.load(
+    './models/paper-plane/scene.gltf',
+    (file) => {
+        console.log("succesfully loaded: " + file);
+        let wholeModel = file.scene;
+
+        wholeModel.traverse((child) => {
+            if(child instanceof THREE.Mesh) {
+                child.castShadow = true;
+                paperPlaneModel = child;
+            }
+        })
+
+        paperPlaneModel.position.set(5, -5, -10);
+        paperPlaneModel.scale.set(0.001, 0.001, 0.001);
+        paperPlaneModel.rotation.x = - Math.PI / 4;
+
+        scene.add(paperPlaneModel);
+    }
+)
 
 // Lights
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
@@ -47,13 +73,13 @@ window.addEventListener('scroll', () => {
 function animate() {
     requestAnimationFrame(animate);
 
-    // Rotate cube
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
+    if (!!paperPlaneModel) {
+        paperPlaneModel.position.x = scrollY * 0.005;
+        paperPlaneModel.position.y = -scrollY* 0.005
+    }
 
     // Parallax effect based on scroll
     camera.position.y = -scrollY * 0.005;  // subtle vertical parallax
-    cube.position.y = scrollY * 0.0005;    // cube moves slightly with scroll
 
     renderer.render(scene, camera);
 }
@@ -70,3 +96,4 @@ window.addEventListener('resize', () => {
 
     renderer.setSize(sizes.width, sizes.height);
 });
+*/
